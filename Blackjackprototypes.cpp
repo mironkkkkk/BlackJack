@@ -12,7 +12,7 @@ int** generateCardsSet() {
     return set;
 }
 
-void shuffleDeck(int** set) {
+void shuffleSet(int** set) {
     for (int i = 0; i < 52; i++) {
         int randomIndex = random(0, 51);
         int* temp = set[i];
@@ -21,10 +21,9 @@ void shuffleDeck(int** set) {
     }
 }
 
-void showCards(int** array) {
-    int countCards = _msize(array) / sizeof(array[0]);
+void showCards(int** set, int countCards) {
     for (int i = 0; i < countCards; i++) {
-        switch (array[i][0]) {
+        switch (set[i][0]) {
         case 11:
             cout << "J";
             break;
@@ -38,17 +37,58 @@ void showCards(int** array) {
             cout << "A";
             break;
         default:
-            cout << array[i][0];
+            cout << set[i][0];
         }
-        cout << char(array[i][1]) << " ";
+        cout << char(set[i][1]) << " ";
     }
+    cout << endl;
+}
+
+void showHands(int** playerCard, int playerCardCount, int** dealerCard, int dealerCardCount) {
+    cout << "Ваши игрока: ";
+    showCards(playerCard, playerCardCount);
+
+    cout << "Карты дилера: ";
+    showCards(dealerCard, dealerCardCount);
 }
 
 
+void cardsUserAndDealer(int** set, int& cardIndex, int** playerCard, int** dealerCard, int& playerCardCount, int& dealerCardCount) {
+    playerCard[playerCardCount++] = set[cardIndex++];
+    dealerCard[dealerCardCount++] = set[cardIndex++];
+    playerCard[playerCardCount++] = set[cardIndex++];
+    dealerCard[dealerCardCount++] = set[cardIndex++];
+}
+
+void showMenu() {
+    cout << "Добро пожаловать в игру 21!" << endl << "Для того что бы начать игру нажмите 1" << endl << "Для завершения игры нажмите 2" << endl;
+}
+
 int main() {
-    int** set = generateCardsSet();
-    shuffleDeck(set);
-    showCards(set);
+    setlocale(LC_ALL, "ru");
+    int** set = generateCardsSet(); // главная колода
+    shuffleSet(set);
+    showMenu();
+    int choise;
+    cin >> choise;
+    switch (choise)
+    {
+    case 1:
+        int cardIndex = 0;
+        int playerCardCount = 0;
+        int dealerCardCount = 0;
+        int* playerCard[8];
+        int* dealerCard[8];
+
+        cardsUserAndDealer(set, cardIndex, playerCard, dealerCard, playerCardCount, dealerCardCount);
+        showHands(playerCard, playerCardCount, dealerCard, dealerCardCount);
+        break;
+    case 2:
+        cout << "Вы успешно завершили игру!";
+        break;
+    default:
+        break;
+    }
 }
 
 

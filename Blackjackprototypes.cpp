@@ -45,18 +45,26 @@ void showCards(int** set, int countCards) {
         }
         cout << char(set[i][1]) << " ";
     }
-    cout << endl;
 }
 
-void showHands(int** playerCard, int playerCardCount, int** dealerCard, int dealerCardCount) {
-    cout << "Карты игрока: ";
+// новый вывод карт
+void showHands(int** playerCard, int playerCardCount, int** dealerCard, int dealerCardCount, bool revealDealer = false) {
+    cout << endl << "Карты игрока: ";
     showCards(playerCard, playerCardCount);
 
+    cout << endl;
     cout << "Карты дилера: ";
-    showCards(dealerCard, dealerCardCount);
+    if (revealDealer) {
+        showCards(dealerCard, dealerCardCount);
+    }
+    else {
+        showCards(dealerCard, 1);
+        cout << "? "; // скрытие 2 карты дилера
+    }
 }
 
-// раздача куарт игроку и дилеру
+
+// раздача карт игроку и дилеру
 void cardsUserAndDealer(int** set, int& cardIndex, int** playerCard, int** dealerCard, int& playerCardCount, int& dealerCardCount) {
     playerCard[playerCardCount++] = set[cardIndex++];
     dealerCard[dealerCardCount++] = set[cardIndex++];
@@ -152,7 +160,7 @@ int main() {
         }
 
         cardsUserAndDealer(set, cardIndex, playerCard, dealerCard, playerCardCount, dealerCardCount);
-        showHands(playerCard, playerCardCount, dealerCard, dealerCardCount);
+        showHands(playerCard, playerCardCount, dealerCard, dealerCardCount, false);
 
         if (cardSumm(playerCard, playerCardCount) == 21) {
             cout << endl << "Black Jack! Вы выиграли!" << endl;
@@ -172,10 +180,10 @@ int main() {
             switch (choice2) {
             case 1:
                 addCard(set, cardIndex, playerCard, playerCardCount);
-                showHands(playerCard, playerCardCount, dealerCard, dealerCardCount);
+                showHands(playerCard, playerCardCount, dealerCard, dealerCardCount, false);
                 if (more21(playerCard, playerCardCount)) {
                     balanceUser -= betUser;
-                    cout << "Перебор! Вы проиграли свою ставку." << endl;
+                    cout << endl << "Перебор! Вы проиграли свою ставку." << endl;
                     shuffleSet(set);
                     playerMove = false;
                 }
@@ -193,22 +201,18 @@ int main() {
                 }
                 betUser *= 2;
                 addCard(set, cardIndex, playerCard, playerCardCount);
-                showHands(playerCard, playerCardCount, dealerCard, dealerCardCount);
+                showHands(playerCard, playerCardCount, dealerCard, dealerCardCount, true);
                 if (more21(playerCard, playerCardCount)) {
                     balanceUser -= betUser;
-                    cout << "Перебор! Вы проиграли: " << betUser << endl;
+                    cout << endl << "Перебор! Вы проиграли: " << betUser << endl;
                     shuffleSet(set);
-                }
-                else {
-                    dealerAddCard(set, cardIndex, dealerCard, dealerCardCount);
-                    showHands(playerCard, playerCardCount, dealerCard, dealerCardCount);
                 }
                 playerMove = false;
                 break;
 
             case 3:
                 dealerAddCard(set, cardIndex, dealerCard, dealerCardCount);
-                showHands(playerCard, playerCardCount, dealerCard, dealerCardCount);
+                showHands(playerCard, playerCardCount, dealerCard, dealerCardCount, true);
                 playerMove = false;
                 break;
 
@@ -224,16 +228,16 @@ int main() {
 
             if (dealerSum > 21 || playerSum > dealerSum) {
                 balanceUser += betUser;
-                cout << "Вы выиграли: " << betUser << endl;
+                cout << endl << "Вы выиграли: " << betUser << endl;
                 shuffleSet(set);
             }
             else if (dealerSum == playerSum) {
-                cout << "Ничья! Ваша ставка возвращена: " << betUser << endl;
+                cout << endl << "Ничья! Ваша ставка возвращена: " << betUser << endl;
                 shuffleSet(set);
             }
             else {
                 balanceUser -= betUser;
-                cout << "Дилер выиграл! Вы проиграли свою ставку: " << betUser << endl;
+                cout << endl << "Дилер выиграл! Вы проиграли свою ставку: " << betUser << endl;
                 shuffleSet(set);
             }
         }
